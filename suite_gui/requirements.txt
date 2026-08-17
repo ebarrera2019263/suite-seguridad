@@ -1,0 +1,11 @@
+rich>=13.7
+paramiko>=3.4
+cryptography>=42.0
+scapy>=2.5
+reportlab>=4.1
+pyinstaller>=6.6
+# Multiplataforma: reemplazan la dependencia de 'net use' (SMB) y de
+# powershell.exe/WinRM local, para que las pestanas de Auditoria de
+# Credenciales y Parche Remoto funcionen tambien desde macOS/Linux.
+pywinrm>=0.4.3
+smbprotocol>=1.12

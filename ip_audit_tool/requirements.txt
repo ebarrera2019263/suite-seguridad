@@ -1,0 +1,6 @@
+rich>=13.7
+paramiko>=3.4
+cryptography>=42.0
+scapy>=2.5
+reportlab>=4.1
+pyinstaller>=6.6

@@ -1,0 +1,39 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+.venv/
+env/
+ENV/
+build/
+dist/
+*.egg-info/
+
+# Reportes generados (pueden contener datos de auditorías reales)
+reportes/
+reports/
+*.report.json
+
+# Datos sensibles / credenciales
+*.env
+.env
+credentials*
+*.key
+*.pem
+secrets*
+wordlist_custom*.txt
+
+# Logs
+*.log
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+
+# Editores
+.vscode/
+.idea/
+*.swp
