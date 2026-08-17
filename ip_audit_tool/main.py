@@ -32,10 +32,17 @@ from typing import List
 from rich.console import Console
 from rich.progress import BarColumn, Progress, TextColumn, TimeElapsedColumn
 
-from core.host_analyzer import analyze_host
-from core.models import HostResult
-from core.report import export_html, export_json, export_pdf, print_console_report
-from core.vuln_db import DEFAULT_PORT_LIST
+# El core de auditoria de IP es un paquete COMPARTIDO en la raiz del repo
+# (ip_audit_core/), consumido tanto por este CLI como por la GUI (suite_gui),
+# para no mantener dos copias que se desincronizan. Al ejecutar desde el
+# codigo fuente hay que anadir la raiz del repo al path; ya empaquetado con
+# PyInstaller el paquete viaja en el bundle y esta insercion es inocua.
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
+from ip_audit_core.host_analyzer import analyze_host
+from ip_audit_core.models import HostResult
+from ip_audit_core.report import export_html, export_json, export_pdf, print_console_report
+from ip_audit_core.vuln_db import DEFAULT_PORT_LIST
 
 BANNER = r"""
 IP SECURITY AUDIT TOOL
@@ -146,6 +153,12 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--no-console-table", action="store_true", help="No imprimir las tablas detalladas en consola")
     parser.add_argument("--yes", action="store_true", help="Omite la confirmacion etica interactiva")
     parser.add_argument("--no-pause", action="store_true", help="No esperar Enter al finalizar (util para scripts/CI)")
+    # Chequeos activos adicionales (opt-in). Estan DESACTIVADOS por defecto para
+    # conservar el comportamiento historico del CLI y porque son mas intrusivos:
+    # requieren autorizacion explicita sobre la aplicacion/servicio objetivo.
+    parser.add_argument("--web-sqli", action="store_true", help="Activa el sondeo NO destructivo de inyeccion SQL (error-based) sobre puertos web abiertos.")
+    parser.add_argument("--ddos-exposure", action="store_true", help="Comprueba exposicion a DDoS por amplificacion (envia 1 paquete UDP por servicio; no inunda).")
+    parser.add_argument("--connectivity", action="store_true", help="Ejecuta una prueba de conectividad blackbox (ICMP/TCP/UDP acotada) como hallazgo informativo.")
     return parser
 
 
@@ -301,6 +314,9 @@ def main() -> int:
                     3.0,
                     4.0,
                     args.skip_mac,
+                    args.web_sqli,
+                    args.ddos_exposure,
+                    args.connectivity,
                 ): ip
                 for ip in targets
             }

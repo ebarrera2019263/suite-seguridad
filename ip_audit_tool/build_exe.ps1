@@ -10,6 +10,8 @@ python -m pip install -r requirements.txt
 Write-Host "Compilando ejecutable con PyInstaller..." -ForegroundColor Cyan
 python -m PyInstaller --noconfirm --onefile --console `
     --name "IPSecurityAuditTool" `
+    --paths ".." `
+    --collect-submodules ip_audit_core `
     --collect-all rich `
     --collect-all paramiko `
     --collect-all scapy `

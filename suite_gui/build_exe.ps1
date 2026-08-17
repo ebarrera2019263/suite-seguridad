@@ -1,7 +1,8 @@
 # Compila la Suite de Seguridad Interna (GUI unica) en un ejecutable .exe
-# standalone para Windows. Junta ip_audit_core + hardening_core +
-# credential_core + remote_patch_core (copias sin cambios de los core/ de
-# las 4 herramientas originales) detras de una sola interfaz grafica.
+# standalone para Windows. Junta ip_audit_core (paquete COMPARTIDO en la raiz
+# del repo, --paths ..) + hardening_core + credential_core + remote_patch_core
+# (estos tres, copias locales de los core/ originales) detras de una sola
+# interfaz grafica.
 $ErrorActionPreference = "Stop"
 
 Write-Host "Instalando dependencias..." -ForegroundColor Cyan
@@ -11,6 +12,8 @@ python -m pip install -r requirements.txt
 Write-Host "Compilando ejecutable con PyInstaller..." -ForegroundColor Cyan
 python -m PyInstaller --noconfirm --onefile --windowed `
     --name "SuiteSeguridadInterna" `
+    --paths ".." `
+    --collect-submodules ip_audit_core `
     --collect-all rich `
     --collect-all paramiko `
     --collect-all scapy `

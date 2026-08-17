@@ -6,9 +6,11 @@ Interfaz grafica unica que agrupa las 4 herramientas de auditoria y
 hardening (antes 4 .exe separados): auditoria de red, hardening local,
 auditoria de credenciales y parche remoto. Cada pestana usa exactamente la
 misma logica de analisis/remediacion que su herramienta de linea de
-comandos original (ip_audit_core / hardening_core / credential_core /
-remote_patch_core son copias sin cambios de cada core/ original); esta
-aplicacion solo agrega la interfaz.
+comandos original. La auditoria de red usa ip_audit_core, un paquete
+COMPARTIDO en la raiz del repo que consume tanto esta GUI como el CLI
+ip_audit_tool (fuente unica, sin copias divergentes); hardening_core /
+credential_core / remote_patch_core siguen como copias locales de cada
+core/ original. Esta aplicacion solo agrega la interfaz.
 
 USO ETICO OBLIGATORIO: use esta aplicacion unicamente sobre redes/equipos
 propios o con autorizacion explicita por escrito.
@@ -23,6 +25,14 @@ import tkinter as tk
 from datetime import datetime
 from pathlib import Path
 from tkinter import messagebox, ttk
+
+# ip_audit_core es un paquete COMPARTIDO ubicado en la raiz del repo (una sola
+# fuente para la GUI y para el CLI ip_audit_tool). Al correr desde el codigo
+# fuente hay que anadir la raiz del repo al path para poder importarlo; ya
+# empaquetado con PyInstaller el paquete viaja en el bundle y esto es inocuo.
+# Debe ejecutarse ANTES de importar los modulos tab_* (que importan
+# ip_audit_core en su cabecera).
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from gui_common import BG, FG, apply_dark_theme
 
